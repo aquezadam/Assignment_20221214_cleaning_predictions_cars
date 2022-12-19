@@ -4,10 +4,8 @@
 # To clean this dataframe, is essential to consider duplicate rows,
 # the required format/type of the values, missing/wrong values and outliers.
 
-# Step 1: Install and import necessary (pandas, scikit-learn) packages
+# Step 1: Install and import necessary (pandas) packages
 import pandas as pd
-from sklearn.model_selection import train_test_split # module to split data into training and testing
-from sklearn.linear_model import LinearRegression   # linear regression is a class with an algorithm
 
 # Step 2: Read csv file using the pandas method pd.read_csv("file_name.csv")
 df = pd.read_csv("Car details v3.csv")
