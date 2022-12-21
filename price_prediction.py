@@ -6,9 +6,13 @@
 
 # Step 0: Install and import necessary (pandas, scikit-learn) packages and files
 import main_cars
+import math
+import pickle
 import pandas as pd
 from sklearn.model_selection import train_test_split # module to split data into training and testing
 from sklearn.linear_model import LinearRegression   # linear regression is a class with an algorithm
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
 
 # Step 1
 # Create a new df including the column_names of the dependent column and the independent columns.
@@ -94,6 +98,42 @@ engine({engine_mean: .2f} CC) and max_power({max_power_mean: .2f} bhp).
 With this in mind, the predicted price is {selling_price_prediction_mean_median}''')
 print("\n")
 
+
+# NOW, I want to test the prediction
+# Store the testing prediction in variable with the method of the class model.predict([2d array]).
+# Get the mean_absolute_error, the mean_squared_error and the square root of the mean squared error
+# using scikit-learn metrics.
+y_predict = model.predict(x_test)
+mae = mean_absolute_error(y_test, y_predict)
+print(f"Mean absolute error is: {mae: ,.2f}")
+mse = mean_squared_error(y_test, y_predict)
+print(f"Mean squared error is: {mse: ,.2f}")
+rmse = math.sqrt(mse)
+print(f"Square root of mean square error is: {rmse: ,.2f}")
+
+# I want to use the package "pickle" to store my model (considering that models are more complex than this example).
+# Python Pickle is used to serialize and deserialize a python object structure. Any object on python can be pickled
+# so that it can be saved on disk. **Never unpickle data received from an untrusted or unauthenticated source.**
+
+
+# I use the pickle method .dump(initilised_model_class, open("file_name.pkl", "wb"))
+# ** The dump() method of the pickle module in Python, converts a Python object hierarchy into a byte stream.
+# This process is also called as serilaization. The converted byte stream can be written to a buffer or to a disk file.
+pickle.dump(model, open("model.pkl", "wb"))
+
+# To retrieve pickled data, the steps are quite simple. You have to use pickle.load() function to do that. The primary
+# argument of pickle load function is the file object that you get by opening the file in read-binary (rb) mode.
+regressor = pickle.load(open("model.pkl", "rb"))
+
+
+x_testing_prediction = [km_driven_mean, mileage_mean, engine_mean, max_power_mean, 0, 0, 0, 1, 0, 1]
+y_testing_prediction = regressor.predict([x_testing_prediction])
+print(f'''The following prediction tests the previous one. Is also based on the most repeated fuel -petrol- and the most 
+popular transmission -manual-. Additionally, the mean values considered are km_driven ({km_driven_mean:,.2f}), 
+mileage ({mileage_mean: .2f} kmpl), engine({engine_mean: .2f} CC) and max_power({max_power_mean: .2f} bhp). 
+With this in mind, the predicted price according to the test data is {y_testing_prediction}''')
+print("Because the number is so high this prediction is not useful.")
+print("\n")
 
 # • • Other predictions of selling price based testing fuel and transmission.
 # selling_price_prediction_CNG_automatic = model.predict([[km_driven_mean, mileage_mean, engine_mean,
